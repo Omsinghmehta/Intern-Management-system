@@ -1,6 +1,9 @@
 {
   "name": "backend",
   "type": "module",
+  "engines": {
+  "node": "20.x"
+},
   "scripts": {
     "dev": "nodemon backend/server.js",
     "build":"npm install && npm install --prefix frontend/my-app && npm run build --prefix frontend/my-app",
