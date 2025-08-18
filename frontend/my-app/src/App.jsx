@@ -23,7 +23,6 @@ export default function App() {
           <Route path="/intern-dashboard" element={<InternDashboard />} />
           <Route path="/manager-dashboard" element={<ManagerDashboard />} />
           <Route path="/task-detail/:id" element={<TaskDetail />} />
-          {/* <Route path="/register" element={<Register />} /> */}
          
         </Routes>
       </main>
