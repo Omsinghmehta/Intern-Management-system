@@ -1,8 +1,9 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+  "dev": "nodemon backend/server.js",
+  "build": "npm run build --prefix frontend/my-app",
+  "start": "node backend/server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -12,6 +13,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.1",
     "nodemailer": "^7.0.5",
-    "nodemon": "^3.1.10"
-  }
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+  "nodemon": "^3.1.10"
+}
 }

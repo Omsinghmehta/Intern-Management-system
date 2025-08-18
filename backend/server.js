@@ -19,15 +19,19 @@ app.use(cors());
 // connect DB
 connectDB();
 
-const __dirname=path.resolve();
+const _dirname=path.resolve();
+
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/work", workRoutes);
 
-app.get('/', (req, res) => res.send('Intern Manager API running'));
 
+app.use(express.static(path.join(_dirname, "frontend", "my-app", "dist")));
+app.get(/(.*)/, (_, res) => {
+  res.sendFile(path.resolve(_dirname, "frontend", "my-app", "dist", "index.html"));
+});
 // 404
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 
