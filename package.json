@@ -5,10 +5,9 @@
   "author": "",
   "main": "server.js",
   "type": "module",
-
   "scripts": {
     "dev": "nodemon backend/server.js",
-    "build":"npm install && npm install --prefix frontend/my-app && npm run build --prefix frontend/my-app",
+    "build": "npm install && npm install --prefix frontend/my-app && npm run build --prefix frontend/my-app",
     "start": "nodemon backend/server.js"
   },
   "dependencies": {
@@ -18,10 +17,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.1",
+    "node-cron": "^4.2.1",
     "nodemailer": "^7.0.5",
     "path": "^0.12.7"
   },
   "devDependencies": {
-  "nodemon": "^3.1.10"
-}
+    "nodemon": "^3.1.10"
+  }
 }

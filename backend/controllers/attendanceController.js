@@ -1,4 +1,5 @@
 import Attendance from "../models/Attendance.js";
+import cron from "node-cron";
 
 
 export const markAttendance = async (req, res) => {
@@ -35,6 +36,35 @@ export const markAttendance = async (req, res) => {
   }
 };
 
+cron.schedule("59 23 * * *", async () => {
+  try {
+    const interns = await User.find({ role: "intern" }).select("-password");
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let intern of interns) {
+      // check if intern already has attendance record for today
+      const existing = await Attendance.findOne({
+        intern: intern._id,
+        date: today,
+      });
+
+      if (!existing) {
+        // Create Absent entry
+        await Attendance.create({
+          intern: intern._id,
+          date: today,
+          checkIn: new Date(),
+        });
+        
+        // console.log(`Marked Absent for intern: ${intern.name}`);
+      }
+    }
+  } catch (err) {
+    console.error("Error in Absent Cron Job:", err.message);
+  }
+});
 
 export const getAttendanceByIntern = async (req, res) => {
   try {
