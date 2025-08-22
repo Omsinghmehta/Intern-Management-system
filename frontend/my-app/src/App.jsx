@@ -13,7 +13,7 @@ export default function App() {
 
   return (
     <Router>
-      <Toaster position="top-right" />
+      <Toaster position="top-center" />
       <Navbar user={user} setUser={setUser} />
       <main className="min-h-screen">
         <Routes>

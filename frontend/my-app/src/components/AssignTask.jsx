@@ -16,7 +16,7 @@ const AssignTask = ({ token }) => {
   useEffect(() => {
     const fetchInterns = async () => {
       try {
-        const { data } = await axios.get(backendUrl+"/api/auth/interns", {
+        const { data } = await axios.get(backendUrl + "/api/auth/interns", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setInterns(data);
@@ -25,7 +25,7 @@ const AssignTask = ({ token }) => {
       }
     };
     fetchInterns();
-  }, []);
+  }, [token]);
 
   // Handle form change
   const handleChange = (e) => {
@@ -36,7 +36,7 @@ const AssignTask = ({ token }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(backendUrl+"/api/tasks/create", formData, {
+      await axios.post(backendUrl + "/api/tasks/create", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Task assigned successfully!");
@@ -47,8 +47,10 @@ const AssignTask = ({ token }) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-2xl mt-6">
-      <h2 className="text-2xl font-bold text-center mb-6">Assign Task</h2>
+    <div className="max-w-md sm:max-w-lg mx-auto p-6 sm:p-8 bg-white shadow-lg rounded-2xl mt-6">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-6">
+        Assign Task
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
         <input
@@ -57,7 +59,7 @@ const AssignTask = ({ token }) => {
           value={formData.title}
           onChange={handleChange}
           placeholder="Task Title"
-          className="w-full p-2 border rounded-md"
+          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         />
 
@@ -67,7 +69,7 @@ const AssignTask = ({ token }) => {
           value={formData.description}
           onChange={handleChange}
           placeholder="Task Description"
-          className="w-full p-2 border rounded-md"
+          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           rows="4"
           required
         />
@@ -78,7 +80,7 @@ const AssignTask = ({ token }) => {
           name="deadline"
           value={formData.deadline}
           onChange={handleChange}
-          className="w-full p-2 border rounded-md"
+          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         />
 
@@ -87,7 +89,7 @@ const AssignTask = ({ token }) => {
           name="internId"
           value={formData.internId}
           onChange={handleChange}
-          className="w-full p-2 border rounded-md"
+          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         >
           <option value="">Select Intern</option>
@@ -100,7 +102,7 @@ const AssignTask = ({ token }) => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           Assign Task
         </button>

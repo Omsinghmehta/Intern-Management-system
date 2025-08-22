@@ -8,7 +8,7 @@ const FeedbackForm = () => {
   const [internId, setInternId] = useState("");
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(5);
-  const [interns, setInterns] = useState([]); // store interns
+  const [interns, setInterns] = useState([]);
 
   const { token } = useSelector((state) => state.auth);
 
@@ -17,33 +17,24 @@ const FeedbackForm = () => {
     const fetchInterns = async () => {
       try {
         const res = await axios.get(`${backendUrl}/api/auth/interns`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-        setInterns(res.data); // assuming API returns an array of interns
+        setInterns(res.data);
       } catch (err) {
         toast.error("Failed to load interns");
       }
     };
-
     fetchInterns();
   }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await axios.post(
         `${backendUrl}/api/feedback/give-feedback`,
         { internId, message, rating },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       toast.success("Feedback submitted successfully!");
       setInternId("");
       setMessage("");
@@ -54,15 +45,15 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6">
-      <h2 className="text-xl font-bold mb-4">Give Feedback</h2>
+    <div className="max-w-md sm:max-w-lg mx-auto bg-white shadow-lg rounded-2xl p-6 sm:p-8 mt-6">
+      <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center">Give Feedback</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         
-        {/* Dropdown for interns */}
+        {/* Intern dropdown */}
         <select
           value={internId}
           onChange={(e) => setInternId(e.target.value)}
-          className="p-2 border rounded"
+          className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         >
           <option value="">Select Intern</option>
@@ -73,28 +64,30 @@ const FeedbackForm = () => {
           ))}
         </select>
 
-        {/* Feedback message */}
+        {/* Feedback textarea */}
         <textarea
           placeholder="Write feedback..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="p-2 border rounded"
+          className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          rows="4"
           required
         />
 
-        {/* Rating */}
+        {/* Rating input */}
         <input
           type="number"
           min="1"
           max="10"
           value={rating}
           onChange={(e) => setRating(e.target.value)}
-          className="p-2 border rounded"
+          className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
+        {/* Submit button */}
         <button
           type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold"
         >
           Submit Feedback
         </button>
