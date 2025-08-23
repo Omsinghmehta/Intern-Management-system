@@ -1,6 +1,7 @@
 import { backendUrl } from "@/utils/constant";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { nanoid } from "nanoid";
+import { useEffect, useId, useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -121,7 +122,7 @@ export default function InternDashboard() {
         {tasks.length > 0 ? (
           <ul className="list-disc pl-5 sm:pl-6">
             {tasks.map((task) => (
-              <li key={task._id} className="mb-1 text-sm sm:text-base">
+              <li key={nanoid()} className="mb-1 text-sm sm:text-base">
                 <span
                   className="font-medium cursor-pointer hover:underline"
                   onClick={() => navigate(`/task-detail/${task._id}`)}
@@ -156,27 +157,29 @@ export default function InternDashboard() {
         {feedback.length > 0 ? (
           <ul className="list-disc pl-5 sm:pl-6">
             {feedback.map((fb) => (
-              <li key={fb._id} className="mb-1 text-sm sm:text-base">
-                {fb.message}{" "} 
+              <li key={nanoid()} className="mb-1 text-sm sm:text-base">
+                {fb.message}{" "}
                 <span className="text-xs sm:text-sm text-gray-500 font-medium">
                   ({new Date(fb.createdAt).toLocaleDateString()})
                 </span>
-
                 {/* Rating Stars */}
                 <div className="mt-1 sm:mt-0 flex">
-                {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className={i < fb.rating ? "text-yellow-500" : "text-gray-300"}>
-                  ★
-               </span>
-      ))}
-    </div>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={
+                        i < fb.rating ? "text-yellow-500" : "text-gray-300"
+                      }
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-gray-500 text-sm sm:text-base">
-            No feedback yet.
-          </p>
+          <p className="text-gray-500 text-sm sm:text-base">No feedback yet.</p>
         )}
       </div>
     </div>

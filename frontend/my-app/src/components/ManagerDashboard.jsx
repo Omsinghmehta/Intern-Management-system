@@ -26,6 +26,7 @@ export default function ManagerDashboard() {
           { key: "work", label: "See Work" },
           { key: "feedback", label: "Feedback" },
           { key: "progress", label: "Progress" },
+
         ].map((tab) => (
           <button
             key={tab.key}
@@ -61,6 +62,7 @@ export default function ManagerDashboard() {
         {activeTab === "work" && <ManagerWorkSubmissions token={token} />}
 
         {activeTab === "progress" && <InternProgress token={token} />}
+
       </div>
     </div>
   );

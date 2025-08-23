@@ -43,9 +43,9 @@ const Login = () => {
             headers: { Authorization: `Bearer ${data.token}` },
           })
 
-           toast.success(res.data.message);
+          //  toast.success(res.data.message);
         } catch (error) {
-           toast.error(error.response?.data?.message || error.message)
+          //  toast.error(error.response?.data?.message || error.message)
        }
         navigate("/intern-dashboard");
       }

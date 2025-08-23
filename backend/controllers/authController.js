@@ -1,6 +1,7 @@
 import User from '../models/User.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import Chat from '../models/Chat.js';
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -68,3 +69,14 @@ export const getInterns = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch interns", error: error.message });
   }
 };
+
+
+export const getRoomMsg =async (req, res) => {
+  try {
+    const messages = await Chat.find({ roomId: req.params.roomId }).sort({ time: 1 });
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+

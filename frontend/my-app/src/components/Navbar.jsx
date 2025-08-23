@@ -44,12 +44,15 @@ export default function Navbar() {
                 )}
 
                 {user.role === "intern" && (
+                <>
                   <Link
                     to="/intern-dashboard"
                     className="hover:text-yellow-300 transition"
                   >
                     Dashboard
                   </Link>
+
+                  </>
                 )}
 
                 <button

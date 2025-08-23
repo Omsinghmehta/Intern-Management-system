@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { backendUrl } from "@/utils/constant";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const GetInterns = ({ token }) => {
   const [interns, setInterns] = useState([]);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchInterns = async () => {
@@ -11,7 +14,6 @@ const GetInterns = ({ token }) => {
         const { data } = await axios.get(backendUrl+"/api/auth/interns", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("data",data)
         setInterns(data);
       } catch (err) {
         console.error("Error fetching interns:", err);
@@ -35,6 +37,8 @@ const GetInterns = ({ token }) => {
             <p className="mt-2 text-blue-600 font-medium">
               Id: {intern._id}
             </p>
+
+            <Link to={`/chat/${intern._id}/${user.id}`} className=" text-green-700 font-bold">Chat 🔗 </Link>
           </div>
         ))}
       </div>

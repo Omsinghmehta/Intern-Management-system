@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -7,10 +7,11 @@ import { backendUrl } from "@/utils/constant";
 
 const TaskDetail = () => {
   const { id } = useParams();
-  const {token } = useSelector((state) => state.auth);
+  const {token,user } = useSelector((state) => state.auth);
   const [task, setTask] = useState(null);
   const [workDesc, setWorkDesc] = useState("");
   const [workTitle, setWorkTitle] = useState("");
+
 
   const [fileUrl, setFileUrl] = useState("");
 
@@ -21,7 +22,6 @@ const TaskDetail = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("task data => ",data)
         setTask(data);
       } catch (err) {
         toast.error(err.response?.data?.message || "Failed to load task");
@@ -50,7 +50,6 @@ const TaskDetail = () => {
   const submitWork = async (e) => {
     try {
       e.preventDefault();
-      console.log('gone')
       const { data } = await axios.post(backendUrl+
         `/api/work/`,
         { 'title':workTitle, 'description':workDesc,'fileUrl':fileUrl },
@@ -151,6 +150,13 @@ const TaskDetail = () => {
           </p>
         </div>
       )} */}
+
+      <button className="bg-black text-white px-4 py-2 rounded my-8">
+        <Link to={`/chat/${user.id}/${task.createdBy}`} >
+          Chat
+        </Link>
+
+      </button>
     </div>
   );
 };
