@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+top-centre { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import React from "react";
 import { Provider } from "react-redux";
@@ -11,7 +11,7 @@ createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <StrictMode>
       <App />
-      <Toaster position="top-centre" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
     </StrictMode>
   </Provider>
 );
