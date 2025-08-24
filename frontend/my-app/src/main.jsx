@@ -1,4 +1,4 @@
-top-centre { StrictMode } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import React from "react";
 import { Provider } from "react-redux";
