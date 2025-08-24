@@ -2,64 +2,50 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import { useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import Register from "./pages/Register";
 import InternDashboard from "./components/InternDashboard";
 import ManagerDashboard from "./components/ManagerDashboard";
 import TaskDetail from "./components/TaskDetail";
 import Chat from "./components/Chat";
+import Notifications from "./components/Notifications";
+
 import { io } from "socket.io-client";
 import { backendUrl } from "./utils/constant";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addNotification } from "./redux/notificationsSlice";
+import { useEffect } from "react";
 
-const socket = io(backendUrl);
+const socket = io(backendUrl); // connect socket
 
 export default function App() {
   const { user } = useSelector((state) => state.auth);
-
-  // ask permission once
-  useEffect(() => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-
-    // 🔔 test notification on mount
-    if (Notification.permission === "granted") {
-      new Notification("✅ Notifications enabled", {
-        body: "You will now get chat alerts",
-      });
-
-
-    }
-  }, []);
+  const activeChatRoomId = useSelector((s) => s.chat.activeChatRoomId);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.on("receiveMessage", (data) => {
-      console.log("📩 receiveMessage event:", data);
+    if (!user) return;
 
-      if (
-        user &&
-        data.sender !== user.name &&
-        Notification.permission === "granted"
-      ) {
-        console.log("🔔 Showing notification...");
-        new Notification(`New message from ${data.sender}`, {
-          body: data.message,
-        });
-        toast.success(`💬 New message from ${data.sender}`);
-
+    const handleMessage = (data) => {
+      // Show notification only if not in the active chat
+      if (data.roomId !== activeChatRoomId) {
+        dispatch(addNotification({
+          roomId: data.roomId,
+          sender: data.sender,
+          message: data.message,
+          time: data.time,
+        }));
       }
-    });
+    };
+
+    socket.on("receiveMessage", handleMessage);
 
     return () => {
-      socket.off("receiveMessage");
+      socket.off("receiveMessage", handleMessage);
     };
-  }, [user]);
+  }, [user, activeChatRoomId, dispatch]);
 
   return (
     <Router>
-      <Toaster position="top-center" />
       <Navbar />
       <main className="min-h-screen">
         <Routes>
@@ -69,10 +55,8 @@ export default function App() {
           <Route path="/intern-dashboard" element={<InternDashboard />} />
           <Route path="/manager-dashboard" element={<ManagerDashboard />} />
           <Route path="/task-detail/:id" element={<TaskDetail />} />
-          <Route
-            path="/chat/:internId/:managerId"
-            element={<Chat socket={socket} />}
-          />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/chat/:internId/:managerId" element={<Chat socket={socket} />} />
         </Routes>
       </main>
     </Router>

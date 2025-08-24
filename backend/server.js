@@ -44,25 +44,39 @@ app.use("/api/work", workRoutes);
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  // join room (manager-intern specific)
+  // join room
   socket.on("joinRoom", (roomId) => {
-    socket.join(roomId);
-    console.log(`Socket ${socket.id} joined room ${roomId}`);
+    if (roomId) {
+      socket.join(roomId);
+      console.log(`➡️ Socket ${socket.id} joined room ${roomId}`);
+    }
   });
 
   // send message
-  socket.on("sendMessage", async({ roomId, sender, message }) => {
+  socket.on("sendMessage", async ({ roomId, sender, message }) => {
+    try {
+      if (!roomId || !sender || !message) return;
 
-    const newMsg = new Chat({ roomId, sender, message });
-    await newMsg.save();
+      const newMsg = new Chat({ roomId, sender, message });
+      await newMsg.save();
 
-    io.to(roomId).emit("receiveMessage", { sender, message, time: newMsg.time });
+      // send only to that room, not to others
+      io.to(roomId).emit("receiveMessage", {
+        roomId,
+        sender,
+        message,
+        time: newMsg.time,
+      });
+    } catch (err) {
+      console.error("❌ Error saving message:", err);
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    console.log("❌ User disconnected:", socket.id);
   });
 });
+
 
 // Serve frontend
 app.use(express.static(path.join(_dirname, "frontend", "my-app", "dist")));

@@ -1,10 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import logo from '../assets/logo.webp'
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/redux/authSlice";
+import { BellRing } from "lucide-react";
 export default function Navbar() {
 
+  const location = useLocation();
+  const notifications = useSelector((s) => s.notifications.items);
   const navigate = useNavigate();
   const {user}=useSelector(state=>state.auth);
   const dispatch=useDispatch()
@@ -26,6 +29,15 @@ export default function Navbar() {
 
           {/* Links */}
           <div className="hidden md:flex space-x-6 font-medium justify-center items-center">
+            <Link to="/notifications" className="relative">
+            <span className="material-icons"><><BellRing/></></span>
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] px-1.5 rounded-full">
+                {notifications.length}
+              </span>
+            )}
+          </Link>
+
             <Link
               to="/"
               className="hover:text-yellow-300 transition"

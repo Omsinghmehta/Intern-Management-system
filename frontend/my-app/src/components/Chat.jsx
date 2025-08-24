@@ -1,51 +1,60 @@
 import { backendUrl } from "@/utils/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { setActiveChat, clearActiveChat } from "../redux/chatSlice";
 
 
 export default function Chat({socket}) {
   const { internId, managerId } = useParams();
   const { user } = useSelector((state) => state.auth);
 
-  const roomId = internId + managerId;
+const roomId = `manager_${managerId}_intern_${internId}`;
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
+  const dispatch = useDispatch();
+
+
   useEffect(() => {
+  dispatch(setActiveChat(roomId));
 
-    const fetchChats = async () => {
-    const {data} = await axios.get(`${backendUrl}/api/auth/${roomId}`);
+  const fetchChats = async () => {
+    const { data } = await axios.get(`${backendUrl}/api/auth/${roomId}`);
     setMessages(data);
-   };
-    fetchChats();
-
-    // join specific room
-    socket.emit("joinRoom", roomId);
-
-    // listen for incoming messages
-    socket.on("receiveMessage", (data) => {
-      setMessages((prev) => [...prev, data]);
-    });
-
-    return () => {
-      socket.off("receiveMessage");
-    };
-  }, []);
-
-  const sendMessage = () => {
-    if (message.trim() !== "") {
-      socket.emit("sendMessage", { roomId, sender: user.name, message });
-      setMessage("");
-    }
   };
+  fetchChats();
+
+  // ✅ join room
+  socket.emit("joinRoom", roomId);
+
+  // ✅ listen for messages of this room only
+  socket.on("receiveMessage", (data) => {
+    if (data.roomId === roomId) {   // important check
+      setMessages((prev) => [...prev, data]);
+    }
+  });
+
+  return () => {
+    socket.off("receiveMessage");
+    socket.emit("leaveRoom", roomId);   // ✅ leave old room
+    dispatch(clearActiveChat());
+  };
+}, [roomId, socket, dispatch]);
+
+ const sendMessage = () => {
+  if (message.trim() !== "") {
+    socket.emit("sendMessage", { roomId, senderId: user._id, sender: user.name, message });
+    setMessage("");
+  }
+};
 
   return (
     <div className="flex flex-col h-[80vh] w-full my-8 max-w-md mx-auto bg-white shadow-xl rounded-2xl overflow-hidden border">
       {/* Header */}
       <div className="bg-blue-600 text-white p-4 font-semibold text-lg">
-         Chat... 
+         Chat Room
       </div>
 
       {/* Messages area */}
